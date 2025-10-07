@@ -1,41 +1,33 @@
 name: Deploy to production
 
-
 on:
-workflow_dispatch:
-
+  workflow_dispatch:
 
 permissions:
-contents: read
-packages: read
-
+  contents: read
+  packages: read
 
 jobs:
-deploy:
-runs-on: ubuntu-latest
-environment:
-name: production
-# Si vous configurez des protections d'environnement dans GitHub (approbation manuelle),
-# l'exécution attendra qu'un réviseur approuve.
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: production
 
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
-steps:
-- name: Checkout
-uses: actions/checkout@v4
+      - name: Require secret
+        env:
+          APP_SECRET: ${{ secrets.APP_SECRET }}
+        run: |
+          if [ -z "$APP_SECRET" ]; then
+            echo "APP_SECRET secret is not set"; exit 1
+          fi
+          echo "APP_SECRET present (value hidden)"
 
-
-- name: Require secret
-env:
-APP_SECRET: ${{ secrets.APP_SECRET }}
-run: |
-if [ -z "$APP_SECRET" ]; then
-echo "APP_SECRET secret is not set"; exit 1
-fi
-echo "APP_SECRET present (value hidden)"
-
-
-- name: Simulate deployment
-run: |
-IMAGE="ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}:latest"
-echo "Déploiement de l'image ${IMAGE} sur production..."
-echo "(Simulé) Utilisation du secret APP_SECRET pour la configuration"
+      - name: Simulate deployment
+        run: |
+          IMAGE="ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}:latest"
+          echo "Déploiement de l'image ${IMAGE} sur production..."
+          echo "(Simulé) Utilisation du secret APP_SECRET pour la configuration"
