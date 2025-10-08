@@ -14,9 +14,15 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 2️⃣ Debug : vérifier que le secret est bien lu
-      - name: Debug GHCR_PAT
-        run: echo "GHCR_PAT is set: ${{ secrets.MY_TOKEN != '' }}"
+      # 2️⃣ Debug : vérifier que le secret est bien présent
+      - name: Debug MY_TOKEN
+        run: |
+          if [ -z "${{ secrets.MY_TOKEN }}" ]; then
+            echo "MY_TOKEN secret is not set"
+            exit 1
+          else
+            echo "MY_TOKEN is set"
+          fi
 
       # 3️⃣ Nettoyer Docker (au cas où)
       - name: Logout Docker (clean)
