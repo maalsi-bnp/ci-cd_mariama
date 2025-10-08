@@ -1,4 +1,3 @@
-cat > tests/test_main.py <<'PY'
 # tests/test_main.py
 from app.main import add
 import runpy
@@ -17,4 +16,3 @@ def test_main_block(capsys):
     runpy.run_module("app.main", run_name="__main__")
     output = capsys.readouterr().out
     assert "Exemple: add(2,3)" in output
-PY
